@@ -9,16 +9,18 @@ import qualified Delete (act)
 
 main :: IO ()
 main = do
+    let path = "logs.txt"
     args <- Env.getArgs
-    act args
+    act args path
 
-act :: [String] -> IO ()
-act ["-c"] = Create.act
-act ["-r"] = Read.act
-act ["-u"] = Update.act
-act ["-d"] = Delete.act
-act _ = help
+act :: [String] -> String -> IO ()
+act ["-c"] path = Create.act Nothing path
+act ["-c", ymd] path = Create.act (Just ymd) path
+act ["-r"] path = Read.act
+act ["-u"] path = Update.act
+act ["-d"] path = Delete.act
+act _ _ = help
 
 help :: IO ()
-help = putStrLn "Unkown argument"
+help = putStrLn "Unknown argument"
 
