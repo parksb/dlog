@@ -16,7 +16,7 @@ main = do
 act :: [String] -> String -> IO ()
 act ["-c"] path = Create.act Nothing path
 act ["-c", ymd] path = Create.act (Just ymd) path
-act ["-r"] path = Read.act
+act ["-r"] path = Read.act path
 act ["-u"] path = Update.act
 act ["-d"] path = Delete.act
 act _ _ = help
