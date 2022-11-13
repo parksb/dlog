@@ -1,36 +1,29 @@
 module Create (act) where
 
-import System.Environment
-import System.IO
-import System.Directory
 import Data.Time.Clock
 import Data.Time.Calendar
 import Data.Time.Calendar.MonthDay (DayOfYear)
 import Data.Time.LocalTime
 import Data.List
 
-act :: Maybe String -> String -> IO ()
-act Nothing path = do
-    ymd <- currentYmd
-    act' ymd path
-act (Just ymd) path = act' ymd path
+import qualified Log (writeLog, exists)
 
-act' :: String -> String -> IO ()
-act' ymd path = do
-    logs <- fmap lines (readFile path)
-    if exists logs ymd then putStrLn "Log already exists."
-    else do
-        log <- putStrLn "What happened?" >> getLine
-        appendFile path (ymd ++ ";" ++ log ++ "\n")
+act :: Maybe String -> IO ()
+act Nothing = currentYmd >>= \ymd -> act' (read ymd)
+act (Just ymd) = act' (read ymd)
+
+act' :: Int -> IO ()
+act' ymd =
+    Log.exists ymd >>= \isExists ->
+        if isExists then putStrLn "Log already exists."
+        else putStrLn "What happened?" >> getLine >>= \txt ->
+            Log.writeLog (ymd, txt)
 
 currentYmd :: IO String
-currentYmd = do
-    t <- getCurrentTime
-    tz <- getCurrentTimeZone
-    return (ymd (date (utcToLocalTime tz t)))
-
-exists :: [String] -> String -> Bool
-exists s t = any (\x -> t `isPrefixOf` x) s
+currentYmd =
+    getCurrentTime >>= \time ->
+        getCurrentTimeZone >>= \tz ->
+            return $ ymd (date (utcToLocalTime tz time))
 
 date :: LocalTime -> (Year, MonthOfYear, DayOfYear)
 date n = toGregorian (localDay n)

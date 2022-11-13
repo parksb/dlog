@@ -22,7 +22,7 @@ maintainer:         parkgds@gmail.com
 extra-source-files: CHANGELOG.md
 
 library
-    exposed-modules:  Create, Read, Update, Delete
+    exposed-modules:  Log, Create, Read, Update, Delete
 
     -- Modules included in this library but not exported.
     -- other-modules:
