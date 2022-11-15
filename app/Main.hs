@@ -13,7 +13,7 @@ command :: [String] -> IO ()
 command ["-c"] = Create.act Nothing
 command ["-c", ymd] = Create.act (Just ymd)
 command ["-r"] = Read.act
-command ["-u"] = Update.act
+command ["-u", ymd, txt] = Update.act (ymd, txt)
 command ["-d", ymd] = Delete.act ymd
 command _ = help
 
