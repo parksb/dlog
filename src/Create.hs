@@ -5,7 +5,7 @@ import Data.Time.Calendar
 import Data.Time.Calendar.MonthDay (DayOfYear)
 import Data.Time.Clock
 import Data.Time.LocalTime
-import qualified Log (exists, writeToFile)
+import qualified Log (fcreate, fexists)
 
 act :: Maybe String -> IO ()
 act Nothing = currentYmd >>= \ymd -> act' (read ymd)
@@ -13,12 +13,12 @@ act (Just ymd) = act' (read ymd)
 
 act' :: Int -> IO ()
 act' ymd =
-  Log.exists ymd >>= \isExists ->
+  Log.fexists ymd >>= \isExists ->
     if isExists
       then putStrLn "Log already exists."
       else
         putStrLn "What happened?" >> getLine >>= \txt ->
-          Log.writeToFile (ymd, txt)
+          Log.fcreate (ymd, txt)
 
 currentYmd :: IO String
 currentYmd =

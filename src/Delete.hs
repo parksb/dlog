@@ -1,13 +1,13 @@
 module Delete (act) where
 
-import qualified Log (exists, removeFromFile)
+import qualified Log (fdelete, fexists)
 
 act :: String -> IO ()
 act ymd = act' (read ymd)
 
 act' :: Int -> IO ()
 act' ymd =
-  Log.exists ymd >>= \isExists ->
+  Log.fexists ymd >>= \isExists ->
     if not isExists
       then putStrLn "Log not found."
-      else Log.removeFromFile ymd
+      else Log.fdelete ymd
